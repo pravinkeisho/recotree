@@ -8,6 +8,23 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
+  <!-- Header with Logo -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <!-- Logo - place your logo file in /public folder -->
+        <img src="/public/logo.png" alt="Recotree Logo" class="h-10 w-auto" />
+        <span class="text-2xl font-bold text-green-700">Recotree</span>
+      </div>
+      <nav class="hidden md:flex gap-6 text-sm font-medium">
+        <a href="#solution" class="hover:text-green-700 transition">Solution</a>
+        <a href="#benefits" class="hover:text-green-700 transition">Benefits</a>
+        <a href="#technology" class="hover:text-green-700 transition">Technology</a>
+        <a href="#contact" class="hover:text-green-700 transition">Contact</a>
+      </nav>
+    </div>
+  </header>
+
   <!-- Hero Section -->
   <section class="bg-gradient-to-r from-green-700 to-emerald-600 text-white">
     <div class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-10 items-center">
@@ -15,8 +32,8 @@
         <h1 class="text-4xl md:text-5xl font-bold leading-tight">Trust, Compliance & Quality<br/>for Indian MSMEs</h1>
         <p class="mt-6 text-lg">Recotree is a blockchain-enabled trust management platform that simplifies BIS compliance, testing coordination, and quality assurance for MSMEs and industrial clusters.</p>
         <div class="mt-8 flex gap-4">
-          <a href="#contact" class="bg-white text-green-700 px-6 py-3 rounded-xl font-semibold shadow">Request Demo</a>
-          <a href="#solution" class="border border-white px-6 py-3 rounded-xl font-semibold">How It Works</a>
+          <a href="#contact" class="bg-white text-green-700 px-6 py-3 rounded-xl font-semibold shadow hover:bg-gray-50 transition">Request Demo</a>
+          <a href="#solution" class="border border-white px-6 py-3 rounded-xl font-semibold hover:bg-white/10 transition">How It Works</a>
         </div>
       </div>
       <div class="bg-white/10 rounded-2xl p-6 shadow-xl">
@@ -76,7 +93,7 @@
   </section>
 
   <!-- Stakeholders -->
-  <section class="py-20">
+  <section id="benefits" class="py-20">
     <div class="max-w-6xl mx-auto px-6">
       <h2 class="text-3xl font-bold text-center">Who Benefits?</h2>
       <div class="grid md:grid-cols-3 gap-8 mt-12">
@@ -109,7 +126,7 @@
   </section>
 
   <!-- Technology -->
-  <section class="bg-gray-100 py-20">
+  <section id="technology" class="bg-gray-100 py-20">
     <div class="max-w-6xl mx-auto px-6">
       <h2 class="text-3xl font-bold text-center">Technology Stack</h2>
       <div class="grid md:grid-cols-4 gap-6 mt-12 text-center">
@@ -137,8 +154,11 @@
 
   <!-- Footer -->
   <footer class="bg-gray-900 text-gray-300 py-6">
-    <div class="max-w-6xl mx-auto px-6 flex justify-between text-sm">
-      <p>© 2026 Recotree. All rights reserved.</p>
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+      <div class="flex items-center gap-2">
+        <img src="/public/logo.png" alt="Recotree" class="h-6 w-auto opacity-70" />
+        <span>© 2026 Recotree. All rights reserved.</span>
+      </div>
       <p>Blockchain-enabled Trust Infrastructure</p>
     </div>
   </footer>
