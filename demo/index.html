@@ -138,6 +138,54 @@ input,select{border:1px solid var(--line);background:var(--panel);border-radius:
 @keyframes flash{0%{box-shadow:0 0 0 0 rgba(47,180,99,.55)}100%{box-shadow:0 0 0 14px rgba(47,180,99,0)}}
 .note{font-size:.85rem;color:var(--muted);padding-block:18px 32px;border-top:1px solid var(--line)}
 
+/* network */
+.netgrid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:18px;align-items:start}
+.nethead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.nethead h3{margin:0}
+#netsvg{width:100%;height:auto;display:block}
+.n-grp{opacity:.12;transition:opacity .5s ease}
+.n-grp.on{opacity:1}
+.n-org{fill:var(--panel);stroke:var(--line);stroke-width:1.5}
+.n-peer{fill:var(--navy);stroke:var(--panel);stroke-width:3;transition:fill .3s}
+.n-peer.off{fill:var(--warn)}
+.n-peer.flash{fill:var(--green)}
+.n-ca{fill:var(--mint);stroke:var(--green-ink);stroke-width:1.5}
+.n-ord{fill:var(--panel);stroke:var(--navy);stroke-width:2}
+.n-ordbox{fill:none;stroke:var(--line);stroke-dasharray:4 5}
+.n-edge{stroke:var(--green-ink);stroke-width:2;stroke-dasharray:6 6;fill:none}
+.n-edge.off{stroke:var(--warn)}
+.n-chan{fill:var(--mint);stroke:var(--green-ink);stroke-width:2}
+.n-t{font:600 17px var(--body);fill:var(--fg)}
+.n-s{font:500 13px var(--mono);fill:var(--muted)}
+.n-w{font:600 12px var(--body);fill:#fff}
+.n-c{font:600 12.5px var(--body);fill:var(--green-ink)}
+.n-ok{font:700 13px var(--body);fill:var(--green-ink)}
+.n-bad{font:700 12px var(--body);fill:var(--warn)}
+.pk{fill:var(--green)}
+.pk.blk{fill:var(--navy);stroke:var(--green);stroke-width:2}
+.netcap{min-height:3em;margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--bg);font-size:.95rem}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:.85rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.log{background:#0B102A;color:#C3CAE0;border-radius:10px;padding:12px 14px;font:400 .8rem/1.6 var(--mono);height:520px;overflow-y:auto}
+.log div{white-space:pre-wrap;overflow-wrap:anywhere}
+.log .ok{color:#6FE0A0}.log .hd{color:#fff;font-weight:500;margin-top:6px}.log .dim{color:#7F89AD}
+/* planner */
+.plan-in{display:grid;gap:16px}
+.rangev{display:flex;justify-content:space-between;align-items:baseline}
+.rangev output{font:700 1.1rem var(--display);font-variant-numeric:tabular-nums}
+input[type=range]{padding:0;accent-color:var(--green)}
+.pk4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.bars{display:grid;gap:12px}
+.bar{display:grid;gap:5px}
+.bar .lbl{display:flex;justify-content:space-between;font-size:.92rem;font-weight:600}
+.bar .trk{height:26px;background:var(--bg);border-radius:8px;overflow:hidden}
+.bar .fill{height:100%;border-radius:8px;background:var(--navy);transition:width .4s ease}
+.bar .fill.g{background:var(--green)}
+.meter{height:12px;border-radius:999px;background:var(--bg);overflow:hidden;margin:8px 0}
+.meter div{height:100%;background:var(--green);border-radius:999px;transition:width .4s ease}
+.meter div.hot{background:var(--warn)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:900px){.netgrid{grid-template-columns:minmax(0,1fr)}.log{height:260px}.pk4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:900px){
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
   .two,.cert{grid-template-columns:minmax(0,1fr)}
@@ -182,7 +230,8 @@ body.scan .scanbar{display:block;margin-top:18px}
 
 <main class="wrap">
   <div class="tabs" role="tablist" id="tabs">
-    <button class="tab" role="tab" data-v="dash" aria-selected="true" id="tab-dash">BIS dashboard</button>
+    <button class="tab" role="tab" data-v="network" aria-selected="true" id="tab-network">Network</button>
+    <button class="tab" role="tab" data-v="dash" aria-selected="false" id="tab-dash">BIS dashboard</button>
     <button class="tab" role="tab" data-v="units" aria-selected="false" id="tab-units">Cluster units</button>
     <button class="tab" role="tab" data-v="lab" aria-selected="false" id="tab-lab">Cluster lab</button>
     <button class="tab" role="tab" data-v="ledger" aria-selected="false" id="tab-ledger">Ledger</button>
@@ -190,7 +239,20 @@ body.scan .scanbar{display:block;margin-top:18px}
   </div>
 
   <!-- DASHBOARD -->
-  <section class="view" id="v-dash" role="tabpanel">
+  <!-- NETWORK -->
+  <section class="view" id="v-network" role="tabpanel">
+    <div class="netgrid">
+      <div class="card">
+        <div class="nethead"><div><h3>Cluster blockchain network</h3><p class="sub" id="net-sub">Not created yet</p></div><button class="btn primary" id="net-build" type="button">Create cluster network</button><button class="btn" id="net-replay" type="button" hidden>Replay last transaction</button></div>
+        <svg id="netsvg" viewBox="0 0 900 540" role="img" aria-label="Map of the cluster blockchain network: four organisations, each with a certificate authority and a peer node, joined to one channel and a three-node ordering service"></svg>
+        <p class="netcap" id="net-cap" aria-live="polite">Create the network to see four organisations join one private channel.</p>
+        <div class="legend"><span><i style="background:var(--navy)"></i>Peer node (holds a ledger copy)</span><span><i style="background:var(--mint);border:1.5px solid var(--green-ink)"></i>Certificate authority</span><span><i style="background:var(--green)"></i>Transaction in flight</span><span><i style="background:var(--warn)"></i>Out of consensus</span></div>
+      </div>
+      <div class="card"><h3>Provisioning log</h3><div class="log" id="net-log"><div class="dim">$ recotree network create --cluster coimbatore-foundry</div><div class="dim">Waiting to start…</div></div></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-dash" role="tabpanel" hidden>
     <div class="grid">
       <div class="kpis" id="kpis"></div>
       <div class="two">
@@ -265,14 +327,14 @@ body.scan .scanbar{display:block;margin-top:18px}
   </section>
 
   <div class="scanbar"><a class="btn" href="./">Open the full RecoTree demo</a></div>
-  <p class="note">Demo environment with sample units and results. Hashes are real SHA-256, computed in your browser; the four nodes stand in for RecoTree's permissioned Hyperledger Fabric network.</p>
+  <p class="note">Demo environment with sample units and results. Hashes are real SHA-256, computed in your browser; the network map and provisioning log simulate RecoTree's permissioned Hyperledger Fabric network.</p>
 </main>
 
 <script>
 (function(){
   var MIN = {"FG 150":150,"FG 200":200,"FG 260":260};
   var LAB = {name:"Shared cluster lab (CBTF)", accreditation:"NABL · valid to Mar 2027 (demo)"};
-  var KEY = "recotree-demo-v2";
+  var KEY = "recotree-demo-v3";
   var NODES = [{id:"rt",name:"RecoTree node"},{id:"lab",name:"Cluster lab node"},{id:"office",name:"Cluster office node"},{id:"bis",name:"BIS node"}];
   var S; // state
   var enc = new TextEncoder();
@@ -449,7 +511,9 @@ body.scan .scanbar{display:block;margin-top:18px}
     document.getElementById("chain").innerHTML = html.reverse().join("");
     document.getElementById("tamper").disabled = !S.batches.some(function(b){return !b.pass}) || !!S.tamper;
     document.getElementById("restore").hidden = !S.edits.office;
+    renderNet(cons);
     renderScript();
+    setTimeout(playPending, 50);
   }
   function kpi(n,l){ return '<div class="kpi"><b>'+n+'</b><span>'+l+'</span></div>'; }
   function updateMin(){
@@ -485,15 +549,162 @@ body.scan .scanbar{display:block;margin-top:18px}
     el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
   }
 
+  // ---------- network map ----------
+  var RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var ORGS = [{id:"rt",name:"RecoTree",msp:"RecoTreeMSP",ca:"ca.recotree",x:175,y:150},{id:"bis",name:"BIS",msp:"BISMSP",ca:"ca.bis",x:725,y:150},{id:"lab",name:"Cluster lab",msp:"ClusterLabMSP",ca:"ca.clusterlab",x:175,y:420},{id:"office",name:"Cluster office",msp:"ClusterOfficeMSP",ca:"ca.clusteroffice",x:725,y:420}];
+  var CH = {x:450,y:300}, ORD = {x:450,y:72};
+  var NS = "http://www.w3.org/2000/svg";
+  function el(tag, attrs, text){ var e=document.createElementNS(NS,tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (text!=null) e.textContent=text; return e; }
+  function peerXY(o){ return {x:o.x-45, y:o.y}; }
+  function drawNet(){
+    var svg = document.getElementById("netsvg"); svg.innerHTML = "";
+    var gE = el("g",{}); svg.appendChild(gE);
+    // orderer edge
+    var ge = el("g",{class:"n-grp",id:"g-oedge"}); ge.appendChild(el("line",{class:"n-edge",x1:CH.x,y1:CH.y-80,x2:ORD.x,y2:ORD.y+34})); gE.appendChild(ge);
+    ORGS.forEach(function(o){ var p=peerXY(o); var g=el("g",{class:"n-grp",id:"g-edge-"+o.id}); g.appendChild(el("line",{class:"n-edge",id:"edge-"+o.id,x1:p.x,y1:p.y,x2:CH.x,y2:CH.y})); gE.appendChild(g); });
+    // ordering service
+    var go = el("g",{class:"n-grp",id:"g-ord"});
+    go.appendChild(el("rect",{class:"n-ordbox",x:340,y:18,width:220,height:92,rx:14}));
+    [[395,70],[450,62],[505,70]].forEach(function(c,i){ go.appendChild(el("circle",{class:"n-ord",cx:c[0],cy:c[1],r:16})); go.appendChild(el("text",{class:"n-s",x:c[0],y:c[1]+4,"text-anchor":"middle"},"o"+(i+1))); });
+    go.appendChild(el("text",{class:"n-s",x:450,y:34,"text-anchor":"middle"},"Ordering service · Raft"));
+    svg.appendChild(go);
+    // channel
+    var gc = el("g",{class:"n-grp",id:"g-chan"});
+    gc.appendChild(el("circle",{class:"n-chan",cx:CH.x,cy:CH.y,r:80}));
+    gc.appendChild(el("text",{class:"n-s",x:CH.x,y:CH.y-34,"text-anchor":"middle"},"channel"));
+    gc.appendChild(el("text",{class:"n-t",x:CH.x,y:CH.y-14,"text-anchor":"middle"},"coimbatore-foundry"));
+    gc.appendChild(el("text",{class:"n-s",id:"net-height",x:CH.x,y:CH.y+50,"text-anchor":"middle"},"height 0"));
+    var gk = el("g",{class:"n-grp",id:"g-cc"}); gk.appendChild(el("rect",{x:CH.x-62,y:CH.y+2,width:124,height:26,rx:13,fill:"var(--navy)"})); gk.appendChild(el("text",{class:"n-w",x:CH.x,y:CH.y+19,"text-anchor":"middle"},"IS 210 contract v1.0"));
+    gc.appendChild(gk); svg.appendChild(gc);
+    // orgs
+    ORGS.forEach(function(o){
+      var g = el("g",{class:"n-grp",id:"g-org-"+o.id});
+      g.appendChild(el("rect",{class:"n-org",x:o.x-110,y:o.y-58,width:220,height:116,rx:14}));
+      g.appendChild(el("text",{class:"n-t",x:o.x-96,y:o.y-34},o.name));
+      g.appendChild(el("text",{class:"n-s",x:o.x-96,y:o.y+48},o.msp));
+      var gp = el("g",{class:"n-grp",id:"g-peer-"+o.id}); var p=peerXY(o);
+      gp.appendChild(el("circle",{class:"n-peer",id:"peer-"+o.id,cx:p.x,cy:p.y+4,r:22})); gp.appendChild(el("text",{class:"n-w",x:p.x,y:p.y+8,"text-anchor":"middle"},"peer0"));
+      g.appendChild(gp);
+      var gca = el("g",{class:"n-grp",id:"g-ca-"+o.id}); gca.appendChild(el("rect",{class:"n-ca",x:o.x+22,y:o.y-14,width:36,height:36,rx:6})); gca.appendChild(el("text",{class:"n-s",x:o.x+40,y:o.y+8,"text-anchor":"middle"},"CA"));
+      g.appendChild(gca);
+      g.appendChild(el("text",{class:"n-ok",id:"appr-"+o.id,x:o.x+70,y:o.y+8,opacity:0},"✓"));
+      g.appendChild(el("text",{class:"n-bad",id:"offl-"+o.id,x:o.x-96,y:o.y+74,opacity:0},"Out of consensus"));
+      svg.appendChild(g);
+    });
+    svg.appendChild(el("g",{id:"pk"}));
+  }
+  function on(id, v){ var e=document.getElementById(id); if (e) e.classList.toggle("on", v!==false); }
+  function wait(ms){ return new Promise(function(r){ setTimeout(r, RM?0:ms); }); }
+  function logLine(t, cls){ var L=document.getElementById("net-log"); var d=document.createElement("div"); if(cls) d.className=cls; d.textContent=t; L.appendChild(d); L.scrollTop=L.scrollHeight; (S.netLog=S.netLog||[]).push([t,cls||""]); }
+  function cap(h){ document.getElementById("net-cap").innerHTML = h; }
+  function setAllBuilt(v){
+    ["g-oedge","g-ord","g-chan","g-cc"].forEach(function(id){ on(id,v); });
+    ORGS.forEach(function(o){ on("g-edge-"+o.id,v); on("g-org-"+o.id,v); on("g-peer-"+o.id,v); on("g-ca-"+o.id,v); var a=document.getElementById("appr-"+o.id); if(a) a.setAttribute("opacity", v?1:0); });
+  }
+  var building=false;
+  async function buildNetwork(){
+    if (S.net && S.net.built) return; building=true; S.netLog=[];
+    var L=document.getElementById("net-log"); L.innerHTML="";
+    document.getElementById("net-build").disabled=true;
+    logLine("$ recotree network create --cluster coimbatore-foundry","dim");
+    logLine("Starting certificate authorities","hd"); cap("<b>Certificate authorities.</b> Each organisation gets its own CA, so every node and user carries a verifiable digital identity.");
+    for (var o of ORGS){ on("g-org-"+o.id); await wait(200); on("g-ca-"+o.id); logLine("  "+o.ca+" ... ready","ok"); await wait(220); }
+    logLine("Enrolling identities","hd");
+    for (var o2 of ORGS){ logLine("  peer0."+o2.id+" enrolled ("+o2.msp+")"); await wait(120); }
+    logLine("  lab-operator@clusterlab, auditor@bis enrolled"); await wait(150);
+    logLine("Starting ordering service (Raft, 3 nodes)","hd"); cap("<b>Ordering service.</b> Three orderers agree on the order of transactions and cut them into blocks. No single company controls it.");
+    on("g-ord"); await wait(500); logLine("  o1, o2, o3 ... leader elected: o2","ok");
+    logLine("Starting peers","hd"); cap("<b>Peer nodes.</b> Each organisation runs a peer that keeps its own full copy of the ledger.");
+    for (var o3 of ORGS){ on("g-peer-"+o3.id); logLine("  peer0."+o3.id+" ... running","ok"); await wait(230); }
+    logLine("Creating channel coimbatore-foundry","hd"); cap("<b>Private channel.</b> Only these four organisations can see the cluster's records.");
+    on("g-chan"); on("g-oedge"); await wait(400); logLine("  genesis block #0 written","ok");
+    for (var o4 of ORGS){ on("g-edge-"+o4.id); logLine("  peer0."+o4.id+" joined channel","ok"); await wait(220); }
+    logLine("Deploying smart contract is210-contract v1.0","hd"); cap("<b>Smart contract lifecycle.</b> The IS 210 rules are installed on every peer and must be approved by each organisation before they run.");
+    logLine("  packaged is210-contract_1.0 (Go)"); await wait(200);
+    for (var o5 of ORGS){ logLine("  installed on peer0."+o5.id); await wait(120); }
+    for (var o6 of ORGS){ var a=document.getElementById("appr-"+o6.id); a.setAttribute("opacity",1); logLine("  approved by "+o6.msp,"ok"); await wait(260); }
+    on("g-cc"); logLine("  committed · endorsement policy MAJORITY (3 of 4)","ok"); await wait(300);
+    logLine("Network ready · 4 organisations · 4 peers · 3 orderers","hd");
+    S.net={built:true}; save(); building=false; animatedTo = S.chain.length;
+    cap("<b>Network ready.</b> Any record now needs 3 of 4 organisations to endorse it before it is written to every peer.");
+    await render();
+  }
+  function renderNet(cons){
+    var built = S.net && S.net.built;
+    if (!building){
+      setAllBuilt(!!built);
+      document.getElementById("net-build").hidden = !!built;
+      document.getElementById("net-replay").hidden = !built;
+      if (built && S.netLog && document.getElementById("net-log").childElementCount < 3){
+        var L=document.getElementById("net-log"); L.innerHTML=""; S.netLog.forEach(function(x){ var d=document.createElement("div"); if(x[1]) d.className=x[1]; d.textContent=x[0]; L.appendChild(d); });
+      }
+    }
+    document.getElementById("net-height").textContent = "height "+S.chain.length+" blocks";
+    ORGS.forEach(function(o){
+      var n = cons.nodes.find(function(x){return x.id===o.id}); var bad = built && n && !n.ok;
+      document.getElementById("peer-"+o.id).classList.toggle("off", bad);
+      document.getElementById("edge-"+o.id).classList.toggle("off", bad);
+      document.getElementById("offl-"+o.id).setAttribute("opacity", bad?1:0);
+    });
+    document.getElementById("net-sub").textContent = built ? "4 organisations · 4 peers · 3 orderers · channel coimbatore-foundry · "+cons.agree+" of 4 peers in consensus" : "Not created yet";
+  }
+  // transaction flow animation
+  var animatedTo = 0, playing = false;
+  function dot(from, to, ms, cls){
+    return new Promise(function(res){
+      if (RM){ res(); return; }
+      var c = el("circle",{class:"pk"+(cls?" "+cls:""),r:cls?9:7,cx:from.x,cy:from.y}); document.getElementById("pk").appendChild(c);
+      var t0=null; function st(t){ if(!t0) t0=t; var k=Math.min(1,(t-t0)/ms); var e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+        c.setAttribute("cx", from.x+(to.x-from.x)*e); c.setAttribute("cy", from.y+(to.y-from.y)*e);
+        if (k<1) requestAnimationFrame(st); else { c.remove(); res(); } }
+      requestAnimationFrame(st);
+    });
+  }
+  async function viaChan(a,b,ms){ await dot(a,CH,ms/2); await dot(CH,b,ms/2); }
+  function flashPeer(id){ var p=document.getElementById("peer-"+id); if(!p) return; p.classList.add("flash"); setTimeout(function(){p.classList.remove("flash")}, RM?0:600); }
+  var SUBMITTER = {UNIT_REGISTERED:"office", TEST_RESULT:"lab", MARK_AUTHORISED:"lab", BATCH_REJECTED:"lab", LICENCE_SUSPENDED:"lab", TAMPER_BLOCKED:"rt", NODE_RESYNCED:"office"};
+  async function animateTx(b, fast){
+    var sub = ORGS.find(function(o){return o.id===(SUBMITTER[b.type]||"rt")});
+    var cons = await verifyNodes(); var offIds = cons.nodes.filter(function(n){return !n.ok}).map(function(n){return n.id});
+    var endorsers = ORGS.filter(function(o){ return offIds.indexOf(o.id)<0; }).slice(0,3);
+    var ms = fast?500:900, P=function(o){ return peerXY(o); };
+    cap("<b>Block #"+b.i+" · "+TYPE[b.type]+".</b> "+sub.name+" sends the transaction to peers for endorsement.");
+    await Promise.all(endorsers.map(function(o){ return o.id===sub.id ? wait(ms) : viaChan(P(sub),P(o),ms); }));
+    endorsers.forEach(function(o){ flashPeer(o.id); });
+    cap("<b>Block #"+b.i+" · "+TYPE[b.type]+".</b> Endorsed by "+endorsers.map(function(o){return o.name}).join(", ")+" (policy: 3 of 4).");
+    await wait(fast?150:350);
+    await viaChan(P(sub), {x:ORD.x,y:ORD.y+30}, ms);
+    cap("<b>Block #"+b.i+" · "+TYPE[b.type]+".</b> The ordering service seals it into block #"+b.i+".");
+    await wait(fast?150:350);
+    await Promise.all(ORGS.map(function(o){ return dot({x:ORD.x,y:ORD.y+30}, CH, ms/2, "blk").then(function(){ return dot(CH, P(o), ms/2, "blk"); }).then(function(){ if (offIds.indexOf(o.id)<0) flashPeer(o.id); }); }));
+    cap("<b>Block #"+b.i+" · "+TYPE[b.type]+".</b> "+(offIds.length ? "Committed on "+(4-offIds.length)+" peers. The cluster office peer's altered copy fails the hash check, so it stays out of consensus until it re-syncs." : "Committed on all 4 peers. Every organisation now holds the same record."));
+  }
+  async function playPending(){
+    if (playing || building || !(S.net && S.net.built)) return;
+    if (document.getElementById("v-network").hidden) return;
+    playing = true;
+    while (animatedTo < S.chain.length){
+      var start = Math.max(animatedTo, S.chain.length-2); animatedTo = start;
+      var b = S.chain[animatedTo]; animatedTo++;
+      if (b.type!=="GENESIS") await animateTx(b, S.chain.length-animatedTo>0);
+      if (document.getElementById("v-network").hidden) break;
+    }
+    playing = false;
+  }
+
+
   // ---------- tabs ----------
   function show(v){
     document.querySelectorAll(".tab").forEach(function(t){ t.setAttribute("aria-selected", t.dataset.v===v ? "true":"false"); });
     document.querySelectorAll(".view").forEach(function(s){ s.hidden = s.id !== "v-"+v; });
+    if (v==="network") setTimeout(playPending, 50);
   }
   document.getElementById("tabs").addEventListener("click", function(e){ var t=e.target.closest(".tab"); if(t) show(t.dataset.v); });
 
   // ---------- guided script ----------
   var SCRIPT = [
+    {label:"Network", tab:"network", say:"<b>RecoTree creates the cluster's blockchain network.</b> Four organisations each get a certificate authority and a peer node, a three-node ordering service starts, and every organisation approves the IS 210 smart contract before it goes live.",
+      run: async function(){ await buildNetwork(); }},
     {label:"Onboard", tab:"units", say:"<b>The cluster onboards its units.</b> Four foundries register once. Each gets a factory profile and its own entry on the ledger.",
       run: async function(){ await registerUnit("Foundry unit KF-101","UDYAM-TN-03-0041187","FG 200"); await registerUnit("Foundry unit KF-102","UDYAM-TN-03-0052290","FG 200"); await registerUnit("Foundry unit KF-103","UDYAM-TN-03-0063314","FG 260"); await registerUnit("Foundry unit KF-104","UDYAM-TN-03-0070458","FG 150"); }},
     {label:"Test", tab:"lab", say:"<b>The shared cluster lab tests a batch.</b> KF-101's FG 200 castings reach 212 MPa. The smart contract checks IS 210 and authorises the Standard Mark for this batch only.",
@@ -542,13 +753,16 @@ body.scan .scanbar{display:block;margin-top:18px}
   document.getElementById("verify-chain").addEventListener("click", async function(){ await render(); var el=document.getElementById("chain-banner"); el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); });
   document.getElementById("tamper").addEventListener("click", async function(){ await tamper(); await render(); });
   document.getElementById("restore").addEventListener("click", async function(){ await restore(); await render(); });
-  document.getElementById("reset").addEventListener("click", async function(){ await fresh(); document.getElementById("lab-result").innerHTML='<h3>Smart-contract check</h3><div class="empty">Upload a test to see the IS 210 rules run.</div>'; document.getElementById("verify-out").innerHTML='<h3>Product verification</h3><div class="empty">Pick a batch to see what a buyer sees after scanning the QR code.</div>'; show("dash"); await render(); });
+  document.getElementById("net-replay").addEventListener("click", function(){ if (playing || S.chain.length<2) return; animatedTo = S.chain.length-1; playPending(); });
+  document.getElementById("net-build").addEventListener("click", async function(){ if (busy) return; busy=true; await buildNetwork(); if (S.step===0){ S.step=1; save(); } await render(); busy=false; });
+  document.getElementById("reset").addEventListener("click", async function(){ await fresh(); document.getElementById("lab-result").innerHTML='<h3>Smart-contract check</h3><div class="empty">Upload a test to see the IS 210 rules run.</div>'; document.getElementById("verify-out").innerHTML='<h3>Product verification</h3><div class="empty">Pick a batch to see what a buyer sees after scanning the QR code.</div>'; document.getElementById("net-log").innerHTML='<div class="dim">$ recotree network create --cluster coimbatore-foundry</div><div class="dim">Waiting to start…</div>'; cap("Create the network to see four organisations join one private channel."); animatedTo=S.chain.length; show("network"); await render(); });
 
   // ---------- boot ----------
   async function boot(){
     if (!(window.crypto && crypto.subtle)) { document.getElementById("say").textContent = "This browser can't compute SHA-256 here. Open the demo over https."; return; }
     var m = location.hash.match(/^#v=([A-Za-z0-9_-]+)$/);
     S = load(); if (!S) await fresh();
+    drawNet(); animatedTo = S.chain.length;
     await render();
     if (m){
       try{
